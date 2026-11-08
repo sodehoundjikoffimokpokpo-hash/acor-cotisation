@@ -1,0 +1,66 @@
+# Liste des Tâches - Application ACOR
+
+- [x] Configuration de SQLite en local et modification du fichier `.env`
+- [x] Création et exécution de la migration de structure (Pays/Régions/Zones, Prix de revient, Détails Articles)
+- [x] Mise à jour des Modèles (User, Client, CarnetLot, Article, CaisseClosure)
+- [x] Implémentation du scoping géographique (Pays/Région/Zone) sur les modèles
+- [x] Modification du `CollectorController` (Blocage si caisse clôturée, validation de stock)
+- [x] Modification du `SecretaryController` (Livraison sécurisée avec transaction et décrémentation de stock)
+- [x] Modification du `AdminController` (Pénalité de lot, reversements dynamiques de caisse, comparatif tarifs)
+- [x] Mise à jour des Commandes de stock et d'alertes (`CheckExpiredLots`, `CheckAcorAlerts`)
+- [x] Mise à jour et exécution du `DatabaseSeeder` (données de test adaptées et cohérentes avec les taux journaliers)
+- [x] Correction de `CotisationTest` et exécution des tests unitaires/fonctionnels
+- [x] Intégration dans l'interface et validation globale (Walkthrough)
+- [x] Graphiques de Business Intelligence (Admin Dashboard)
+    - [x] Calcul et agrégation des données analytiques dans `AdminController`
+    - [x] Intégration de la grille de graphiques dans la vue `admin.dashboard`
+    - [x] Script de rendu Chart.js pour l'évolution mensuelle, le top collecteurs et les articles
+- [x] Relance des Inactifs (Collector Dashboard)
+    - [x] Détection des clients inactifs depuis plus de 7 jours dans `CollectorController` (incluant les cotisations validées et en attente)
+    - [x] Affichage de la carte d'alerte avec bouton d'appel direct dans la vue `collector.dashboard`
+- [x] Fusion des Articles et des Lots de Carnets
+    - [x] Ajout des colonnes de composants de prix de l'article sur `carnet_lots` via migration
+    - [x] Refonte de `storeBulkCarnet` dans `AdminController` pour valider et stocker les détails de l'article et calculer le prix final
+    - [x] Refonte de la vue d'approvisionnement en masse avec calcul dynamique du prix final et proposition du montant journalier
+    - [x] Simplification de l'attribution carnet/client côté collecteur (champs auto-remplis en lecture seule selon le carnet sélectionné)
+    - [x] Retrait de l'accès au menu "Articles" séparé du dashboard admin
+- [x] Filtre pays global (Admin Dashboard & Navigation)
+    - [x] Intégration du sélecteur de pays global dans la barre de navigation supérieure (`layouts/app`)
+    - [x] Scoping automatique de toutes les statistiques, courbes, listes et leaderboards selon le pays actif en session dans `AdminController@dashboard`
+- [x] Visuel du Carnet Réel (Grille de cotisations)
+    - [x] Intégration d'une grille interactive de cases (représentant chaque jour du carnet) dans la fiche client Secrétaire
+    - [x] Intégration de la grille générée dynamiquement en JavaScript dans le modal détails client de l'Administrateur
+    - [x] Rendre le visual du carnet disponible sur l'interface collecteur (clic sur le nom du client dans son tableau de suivi)
+    - [x] Code couleur premium (Vert = validé, Orange = en attente de validation, Blanc = non payé) avec indicateur lumineux
+- [x] Cloisonnement strict multi-pays pour collecteurs et secrétaires (ne voient que leurs clients et les carnets de leur propre pays)
+- [x] Affichage du nom et du pays d'affectation de l'utilisateur (collecteur, secrétaire) dans la barre de navigation à la connexion
+- [x] Refonte graphique du tableau de bord collecteur (liste de cartes clients responsives, suppression de la table, correction de l'affichage décimal des jours inactifs)
+- [x] Rangement des données par pays sur l'espace d'administration (lots de carnets, collecteurs, collaborateurs triés et regroupés par pays)
+- [x] Permettre aux administrateurs de créer d'autres profils administrateurs locaux rattachés à un pays spécifique avec restriction d'accès aux seules données de leur pays
+- [x] S'assurer que toutes les requêtes (comptabilité, finance, rapports, collecteurs, lots, habilitations) dans `AdminController` appliquent le scope géographique pour un administrateur local
+- [x] S'assurer que les actions des administrateurs locaux génèrent des logs d'audit appropriés visibles sur le dashboard du Super Admin global
+- [x] Amélioration esthétique globale du site et corrections
+    - [x] Refonte visuelle de welcome.blade.php en portail d'accueil premium
+    - [x] Restauration de la table des cotisations individuelles en attente dans validation.blade.php
+- [x] Nouvelle souscription pour un client existant (Bouton d'enregistrement avec auto-remplissage)
+- [x] Transparence et interconnexion des multi-cotisations d'un même client
+    - [x] Méthode helper `otherPlans()` et attribut `$appends` dans `Client` pour identifier les plans reliés (même téléphone)
+    - [x] Badge "Multi" cliquable sur les cartes de la liste des clients du collecteur
+    - [x] Section dynamique réactive dans le modal livret client listant les autres plans avec boutons de bascule rapide (switch)
+    - [x] Liste d'interconnexion visible sur la fiche dossier client Secrétaire
+    - [x] Raccourci direct "Enregistrer Cotisation" dans le modal livret client pour automatiser l'ouverture du calendrier de versement
+- [x] Sécurisation et préservation de la table des Utilisateurs lors du rafraîchissement des Seeders
+- [x] Véritable calendrier de versement interactif avec navigation des mois
+    - [x] Ajout de boutons de navigation par chevrons (`chevron-left`, `chevron-right`) dans l'en-tête du calendrier
+    - [x] Gestion des variables globales d'état `calendarYear` et `calendarMonth` dans le JavaScript du tableau de bord collecteur
+    - [x] Implémentation des fonctions de changement de mois (`prevCalendarMonth()`, `nextCalendarMonth()`)
+    - [x] Chargement dynamique et rendu des cotisations passées (validées/orange) et des sélections du collecteur sur n'importe quel mois de l'année
+- [x] Transformation du visuel du carnet client (les cases) en véritable calendrier mensuel interactif
+    - [x] Refonte de l'interface visuel carnet en calendrier grid-cols-7 avec en-tête de mois et boutons chevrons
+    - [x] Intégration de la navigation par mois pour le visuel carnet dans le modal du Collecteur (`collector/dashboard`)
+    - [x] Intégration de la navigation par mois pour le visuel carnet dans le modal de l'Administrateur (`admin/dashboard`)
+    - [x] Intégration de la navigation par mois pour le visuel carnet sur le dossier client Secrétaire (`secretary/clients/show`)
+- [x] Adaptation logique des cotisations et de l'affichage du calendrier
+    - [x] Chargement initial du calendrier d'enregistrement de paiement sur le **premier mois impayé** du client (par détection incrémentielle JS)
+    - [x] Chargement initial du calendrier visuel carnet sur le **mois de la dernière cotisation** enregistrée (ou mois actuel si aucune cotisation)
+    - [x] Ajout d'une carte de résumé (Validés, En attente, Total de jours cotisés / Jours cibles) intégrée au visuel calendrier dans tous les profils (Admin, Secrétaire, Collecteur)
